@@ -2,11 +2,14 @@ AFLAGS = /nologo /safeseh
 CPPFLAGS = /nologo /GR- /MD /O2y- /Zi
 LFLAGS = /nologo /DEBUG /INCREMENTAL:NO /MANIFEST:NO /PDBALTPATH:%_PDB% /RELEASE /SUBSYSTEM:CONSOLE,5.1
 
-all: dep_test aslr_test sehop_test
+all: dep_test aslr_test sehop_test exec.exe
 
 !INCLUDE <Makefile_DEP>
 !INCLUDE <Makefile_ASLR>
 !INCLUDE <Makefile_SEHOP>
+
+exec.exe: exec.obj
+	link $** $(LFLAGS) /OUT:$(@F)
 
 clean:
 	-del *.obj *.pdb *.cod *.ilk *.suo *.nativecodeanalysis.xml
