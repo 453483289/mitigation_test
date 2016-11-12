@@ -10,40 +10,40 @@ struct _TEB
 	NT_TIB Tib;
 };
 
-bool ImageIsRelocated( _In_ HMODULE module );
-bool PrimaryThreadStackIsRandomized( _In_ PVOID stack_top );
-__declspec( dllimport ) int dllimport;
+bool ImageIsRelocated(_In_ HMODULE module);
+bool PrimaryThreadStackIsRandomized(_In_ PVOID stack_top);
+__declspec(dllimport) int dllimport;
 int __cdecl main()
 {
 	PVOID stack_top = NtCurrentTeb()->Tib.StackBase;
-	fputs( "Stack Top:", stdout );
-	if( PrimaryThreadStackIsRandomized( stack_top ) )
-		printf_green( "%p", stack_top );
+	fputs("Stack Top:", stdout);
+	if (PrimaryThreadStackIsRandomized(stack_top))
+		printf_green("%p", stack_top);
 	else
-		printf( "%p", stack_top );
-	fputs( " ", stdout );
+		printf("%p", stack_top);
+	fputs(" ", stdout);
 
-	HMODULE exe_handle = GetModuleHandle( nullptr );
-	fputs( "EXE:", stdout );
-	if( ImageIsRelocated( exe_handle ) )
-		printf_green( "%p", exe_handle );
+	HMODULE exe_handle = GetModuleHandle(nullptr);
+	fputs("EXE:", stdout);
+	if (ImageIsRelocated(exe_handle))
+		printf_green("%p", exe_handle);
 	else
-		printf( "%p", exe_handle );
-	fputs( " ", stdout );
+		printf("%p", exe_handle);
+	fputs(" ", stdout);
 
 	HMODULE module;
-	if( !GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, reinterpret_cast<PCWSTR>( &dllimport ), &module ) )
+	if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, reinterpret_cast<PCWSTR>(&dllimport), &module))
 		abort();
 	WCHAR dll[MAX_PATH];
-	if( !GetModuleBaseNameW( GetCurrentProcess(), module, dll, ARRAYSIZE( dll ) ) )
+	if (!GetModuleBaseNameW(GetCurrentProcess(), module, dll, ARRAYSIZE(dll)))
 		abort();
-	printf( "%S:", dll );
-	if( module )
-		if( ImageIsRelocated( module ) )
-			printf_green( "%p", module );
+	printf("%S:", dll);
+	if (module)
+		if (ImageIsRelocated(module))
+			printf_green("%p", module);
 		else
-			printf( "%p", module );
+			printf("%p", module);
 	else
 		abort();
-	puts( "" );
+	puts("");
 }
